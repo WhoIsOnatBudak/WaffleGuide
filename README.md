@@ -1,6 +1,6 @@
 # HowToRun
 
-"npm run dev" yazarsanız direkt çalışır ama bunun için nodejs kurulu olmalı.
+"npm i" + "npm run dev" yazarsanız direkt çalışır ama bunun için nodejs kurulu olmalı.
 
 # HowToSee
 

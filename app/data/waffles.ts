@@ -80,4 +80,12 @@ export const waffleShops: WaffleShop[] = [
         coords: [41.014545, 28.959068],
         image: "/unluWaffle.jpg"
     },
+    {
+        id: 10,
+        name: "Aş'kım Waffle & Kumpir",
+        rating: 7.5,
+        comment: "Mustafa Bozdağan bey ile beraber sipariş verdik, bence fazla şekerliydi ve bonibon harbiden kötüydü. Tüm bunlara rağmen hala neden 7.5 diye düşünüyosanız kalite bazen kendini belli eder :)",
+        coords: [41.116643, 28.998508],
+        image: "/AskimWaf.png"
+    },
 ];
