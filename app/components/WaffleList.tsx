@@ -1,29 +1,59 @@
 import React from 'react';
 import Image from 'next/image';
-import { waffleShops } from '../data/waffles';
+import { WaffleShop, ShopType } from '../data/waffles';
 
 interface WaffleListProps {
     onSelectShop: (id: number) => void;
     selectedShopId: number | null;
+    shops: WaffleShop[];
+    filterType: 'all' | ShopType;
+    setFilterType: (type: 'all' | ShopType) => void;
 }
 
-export default function WaffleList({ onSelectShop, selectedShopId }: WaffleListProps) {
+export default function WaffleList({ onSelectShop, selectedShopId, shops, filterType, setFilterType }: WaffleListProps) {
     return (
         <aside className="w-1/3 flex flex-col border-r border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-900/50 backdrop-blur-xl overflow-y-auto z-10">
             <div className="sticky top-0 z-20 bg-white/80 dark:bg-zinc-900/80 backdrop-blur-md p-6 border-b border-zinc-200 dark:border-zinc-800">
                 <div className="flex items-center gap-2 mb-1">
-                    <span className="text-2xl">🧇</span>
-                    <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-r from-orange-400 via-amber-500 to-yellow-500 bg-clip-text text-transparent drop-shadow-sm">
-                        Waffle Guide
+                    <span className="text-2xl">{filterType === 'burger' ? '🍔' : '🧇'}</span>
+                    <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-r from-orange-400 via-amber-500 to-yellow-500 bg-clip-text text-transparent drop-shadow-sm transition-all">
+                        {filterType === 'burger' ? 'Burger Guide' : 'Waffle Guide'}
                     </h1>
                 </div>
-                <p className="text-sm text-zinc-500 dark:text-zinc-400 font-medium">
-                    Discover Istanbul's best waffle spots
+                <p className="text-sm text-zinc-500 dark:text-zinc-400 font-medium mb-4 transition-all">
+                    Discover Istanbul's best {filterType === 'burger' ? 'burgers' : 'waffle spots'}
                 </p>
+
+                {/* Filter Tabs */}
+                <div className="flex bg-zinc-100 dark:bg-zinc-800/50 p-1 rounded-xl gap-1 mb-2">
+                    <button
+                        onClick={() => setFilterType('all')}
+                        className={`flex-1 py-1.5 px-3 text-xs font-bold rounded-lg transition-all ${filterType === 'all' ? 'bg-white dark:bg-zinc-700 shadow-sm text-zinc-900 dark:text-white' : 'text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300'}`}
+                    >
+                        All
+                    </button>
+                    <button
+                        onClick={() => setFilterType('waffle')}
+                        className={`flex-1 py-1.5 px-3 text-xs font-bold rounded-lg transition-all ${filterType === 'waffle' ? 'bg-white dark:bg-zinc-700 shadow-sm text-orange-500 dark:text-orange-400' : 'text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300'}`}
+                    >
+                        🧇 Waffles
+                    </button>
+                    <button
+                        onClick={() => setFilterType('burger')}
+                        className={`flex-1 py-1.5 px-3 text-xs font-bold rounded-lg transition-all ${filterType === 'burger' ? 'bg-white dark:bg-zinc-700 shadow-sm text-amber-600 dark:text-amber-400' : 'text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300'}`}
+                    >
+                        🍔 Burgers
+                    </button>
+                </div>
             </div>
 
             <div className="flex-1 p-4 space-y-4">
-                {waffleShops.map((shop) => (
+                {shops.length === 0 && (
+                    <div className="text-center p-8 text-zinc-500 dark:text-zinc-400">
+                        No {filterType}s found. Try another category!
+                    </div>
+                )}
+                {shops.map((shop) => (
                     <button
                         key={shop.id}
                         onClick={() => onSelectShop(shop.id)}
@@ -48,12 +78,12 @@ export default function WaffleList({ onSelectShop, selectedShopId }: WaffleListP
                             <div className="absolute top-3 right-3">
                                 <span
                                     className={`flex items-center gap-1 px-2 py-1 rounded-full text-xs font-bold shadow-md border backdrop-blur-md ${shop.rating === null
-                                            ? 'bg-blue-500/80 text-white border-blue-400/50'
-                                            : shop.rating >= 8
-                                                ? 'bg-green-500/80 text-white border-green-400/50'
-                                                : shop.rating >= 7
-                                                    ? 'bg-yellow-500/80 text-white border-yellow-400/50'
-                                                    : 'bg-orange-500/80 text-white border-orange-400/50'
+                                        ? 'bg-blue-500/80 text-white border-blue-400/50'
+                                        : shop.rating >= 8
+                                            ? 'bg-green-500/80 text-white border-green-400/50'
+                                            : shop.rating >= 7
+                                                ? 'bg-yellow-500/80 text-white border-yellow-400/50'
+                                                : 'bg-orange-500/80 text-white border-orange-400/50'
                                         }`}
                                 >
                                     {shop.rating !== null ? (

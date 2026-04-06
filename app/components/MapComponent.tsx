@@ -3,7 +3,7 @@
 import React, { useEffect } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
-import { waffleShops } from '../data/waffles';
+import { WaffleShop, ShopType } from '../data/waffles';
 import L from 'leaflet';
 
 // Fix for default markers not showing up in Next.js + Leaflet
@@ -22,7 +22,7 @@ const getRatingColor = (rating: number | null) => {
     return '#f97316'; // Orange
 };
 
-const createCustomIcon = (rating: number | null) => {
+const createCustomIcon = (rating: number | null, type: ShopType) => {
     const color = getRatingColor(rating);
     // const label = rating !== null ? rating.toString() : '👑';
 
@@ -35,12 +35,27 @@ const createCustomIcon = (rating: number | null) => {
       </svg>
     `;
 
+    // Burger SVG with dynamic color
+    const burgerSvg = `
+      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+         <circle cx="12" cy="12" r="11" fill="white" stroke="${color}" stroke-width="2"/>
+         <!-- Top bun -->
+         <path d="M6 10C6 6.68629 8.68629 4 12 4C15.3137 4 18 6.68629 18 10H6Z" fill="${color}" fill-opacity="0.2" stroke="${color}" stroke-width="1.5"/>
+         <!-- Meat -->
+         <rect x="5" y="11" width="14" height="3" rx="1.5" fill="${color}" stroke="${color}" stroke-width="1.5"/>
+         <!-- Bottom bun -->
+         <path d="M6 15H18C18 17.2091 16.2091 19 14 19H10C7.79086 19 6 17.2091 6 15Z" fill="${color}" fill-opacity="0.2" stroke="${color}" stroke-width="1.5"/>
+     </svg>
+    `;
+
+    const iconSvg = type === 'burger' ? burgerSvg : waffleSvg;
+
     return L.divIcon({
         className: 'custom-waffle-icon',
         html: `
             <div style="display: flex; flex-direction: column; align-items: center;">
                 <div style="filter: drop-shadow(0px 2px 2px rgba(0,0,0,0.3));">
-                   ${waffleSvg}
+                   ${iconSvg}
                 </div>
                 <div style="
                     background-color: white; 
@@ -63,7 +78,7 @@ const createCustomIcon = (rating: number | null) => {
     });
 };
 
-export default function MapComponent({ selectedShopId }: { selectedShopId: number | null }) {
+export default function MapComponent({ selectedShopId, shops }: { selectedShopId: number | null, shops: WaffleShop[] }) {
     // Center of the map (approx Istanbul historical peninsula to cover all points)
     const center: [number, number] = [41.0102, 28.9754];
 
@@ -76,7 +91,7 @@ export default function MapComponent({ selectedShopId }: { selectedShopId: numbe
 
         useEffect(() => {
             if (selectedShopId) {
-                const shop = waffleShops.find(s => s.id === selectedShopId);
+                const shop = shops.find(s => s.id === selectedShopId);
                 if (shop) {
                     map.flyTo(shop.coords, 16, {
                         animate: true,
@@ -102,11 +117,11 @@ export default function MapComponent({ selectedShopId }: { selectedShopId: numbe
                 attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             />
-            {waffleShops.map((shop) => (
+            {shops.map((shop) => (
                 <Marker
                     key={shop.id}
                     position={shop.coords}
-                    icon={createCustomIcon(shop.rating)}
+                    icon={createCustomIcon(shop.rating, shop.type)}
                     ref={(ref) => {
                         if (ref) {
                             markerRefs.current[shop.id] = ref;
