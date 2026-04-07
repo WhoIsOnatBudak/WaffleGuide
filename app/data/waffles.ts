@@ -262,5 +262,14 @@ export const waffleShops: WaffleShop[] = [
         coords: [41.104655, 29.019389],
         image: "/kucukEv.jpg",
         type: 'burger'
+    },
+        {
+        id: 29,
+        name: "Zapata Burger",
+        rating: 9,
+        comment: "An burger ile beraber yediğim en iyisi, Özden hanım ısmarladı unutamam beleşe yediğimi belki o yüzden güzeldir. Her ay yeni bir ayın burgeri var hepsini güzel yapıyolar diye duydum ama denemedim klasikleri güzel",
+        coords: [40.987663, 29.025778],
+        image: "/zapata.jpg",
+        type: 'burger'
     }
 ];
